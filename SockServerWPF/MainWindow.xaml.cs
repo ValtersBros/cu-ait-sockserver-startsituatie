@@ -36,14 +36,34 @@ namespace SockServerWPF
 
         public MainWindow()
         {
-
+            InitializeComponent();
+            DoStartup();
+            FillDictionary();
+            btnStart.Visibility = Visibility.Visible;
+            btnStop.Visibility = Visibility.Hidden;
         }
+
         public static void DoEvents()
         {
             System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
         }
+
         private void DoStartup()
         {
+            cmbIPs.ItemsSource = Helper.GetActiveIP4s();
+            DataTable dt = Helper.ReadConfigFile();
+            txtPort.Text = dt.Rows[0]["Port"].ToString();
+            lblWorkingFolder.Content = dt.Rows[0]["Folder"].ToString();
+            activeFolder = dt.Rows[0]["Folder"].ToString();
+            baseFolder = dt.Rows[0]["Folder"].ToString();
+            try 
+            { 
+                cmbIPs.SelectedItem = dt.Rows[0]["IP"].ToString();
+            } 
+            catch 
+            { 
+                cmbIPs.SelectedItem = "127.0.0.1"; 
+            }
         }
 
         private void BtnSaveConfig_Click(object sender, RoutedEventArgs e)
